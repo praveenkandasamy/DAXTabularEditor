@@ -27,3 +27,5 @@ foreach(var c in Selected.Columns)
     // Hide the base column:
     c.IsHidden = false;
 }
+
+
