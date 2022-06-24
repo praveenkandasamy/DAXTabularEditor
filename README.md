@@ -10,6 +10,7 @@ https://github.com/praveenkandasamy/DAXTabularEditor.git
 // Creates a COUNT measure for every currently selected column and not hide the column.
 
 foreach(var c in Selected.Columns)
+
 {
     var newMeasure = c.Table.AddMeasure(
         "Count of " + c.Name,                    // Name
