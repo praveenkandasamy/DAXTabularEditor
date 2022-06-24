@@ -8,6 +8,7 @@ https://github.com/praveenkandasamy/DAXTabularEditor.git
 
 //COUNT
 // Creates a COUNT measure for every currently selected column and not hide the column.
+
 foreach(var c in Selected.Columns)
 {
     var newMeasure = c.Table.AddMeasure(
