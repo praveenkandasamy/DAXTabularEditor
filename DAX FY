@@ -1,0 +1,25 @@
+Total VEECs registered - FY = VAR StartDate =
+        IF (
+        MONTH ( TODAY () ) <= 6,
+        DATE ( YEAR ( TODAY () )-1, 7, 1 ),
+        DATE ( YEAR ( TODAY () ), 7, 1 )
+        )
+-- if month is less than or = to 6 then start from 1st July lasy year 
+    
+VAR EndDate =
+        IF(
+            MONTH( TODAY() ) = 1,
+            DATE( YEAR( TODAY() ) - 1, 12, 1 ),
+            DATE( YEAR( TODAY() ), MONTH( TODAY() ) - 1, 1 )
+        )
+        
+VAR LastMonthEndDate =
+        EOMONTH ( EndDate, 0 )
+        
+VAR YearSum =    
+        CALCULATE (
+        [Total VEECs registered ],
+        DATESBETWEEN ( 'Calendar'[Dates], StartDate, LastMonthEndDate )
+        )
+RETURN
+YearSum
