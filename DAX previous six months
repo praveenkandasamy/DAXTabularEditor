@@ -1,0 +1,16 @@
+Total VEECs registered - previous month = 
+--VAR s = [Total VEECs registered ]
+
+VAR StartDateLM =
+    IF (
+        MONTH ( TODAY () ) = 1,
+        DATE ( YEAR ( TODAY () ) - 1, 12, 1 ),
+        DATE ( YEAR ( TODAY () ), MONTH ( TODAY () ) - 1, 1 )
+    )
+VAR EndDateLM =
+    EOMONTH ( StartDateLM, 0 )
+RETURN
+    CALCULATE (
+        [Total VEECs registered ],
+        DATESBETWEEN ( 'Calendar'[Dates], StartDateLM, EndDateLM )
+    )
