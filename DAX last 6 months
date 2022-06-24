@@ -1,0 +1,30 @@
+Total VEECs registered - average last 6 months = VAR StartDate =
+        IF (
+        MONTH ( TODAY () ) <= 5 ,
+        DATE ( YEAR ( TODAY () )-1, MONTH( TODAY() ) + 6  , 1 ),
+        DATE ( YEAR ( TODAY () ), MONTH ( TODAY () ) - 5, 1 )
+        )
+        
+    --- last 6 months if month less than 5 should be year less 1
+    --- added +6 to current month as this was shortest route to getting month
+    --- if month >5 simply minus 5 can provide 6 month range
+    
+VAR Lastmonth =
+        IF(
+            MONTH( TODAY() ) = 1,
+            DATE( YEAR( TODAY() ) - 1, 12, 1 ),
+            DATE( YEAR( TODAY() ), MONTH( TODAY() ) - 1, 1 )
+        )
+        
+VAR LastMonthEndDate =
+        EOMONTH ( Lastmonth, 0 )
+
+VAR monthsum =    
+        CALCULATE (
+        [Total VEECs registered ],
+        DATESBETWEEN ( 'Calendar'[Dates], StartDate, LastMonthEndDate )
+        )
+VAR result =  monthsum/6
+
+RETURN
+result
