@@ -1,0 +1,13 @@
+Total VEECs registered - same period last year = VAR StartDate =
+        DATE ( YEAR ( TODAY () )-1, 1, 1 )
+    
+VAR EndDate =
+        DATE ( YEAR ( TODAY () )-1, MONTH(TODAY()), 31 )
+        
+VAR YearSum =    
+        CALCULATE (
+        [Total VEECs registered ],
+        DATESBETWEEN ( 'Calendar'[Dates], StartDate, EndDate )
+        )
+RETURN
+YearSum
