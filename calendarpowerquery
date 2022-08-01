@@ -1,0 +1,27 @@
+let
+    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMjDUByIjAwNLpdhYAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [StartDate = _t]),
+    //#"Added Custom" = Table.AddColumn(Source, "EndDate", each Date.From(DateTime.LocalNow())),
+    #"Today plus 366 days" = Table.AddColumn(Source, "EndDate", each Date.AddDays(Date.From(DateTime.LocalNow()),366)),
+    #"Changed Type2" = Table.TransformColumnTypes(#"Today plus 366 days",{{"EndDate", type date}}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Changed Type2",{{"StartDate", type date}}),
+    #"Added Custom1" = Table.AddColumn(#"Changed Type", "Dates", each {Number.From([StartDate])..Number.From([EndDate])}),
+    #"Expanded Dates" = Table.ExpandListColumn(#"Added Custom1", "Dates"),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Expanded Dates",{{"Dates", type date}}),
+    #"Removed Columns1" = Table.RemoveColumns(#"Changed Type1",{"StartDate", "EndDate"}),
+    #"Added Custom2" = Table.AddColumn(#"Removed Columns1", "Year", each Date.Year([Dates])),
+    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Month", each Date.Month([Dates])),
+    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "MonthName", each Date.MonthName([Dates])),
+    #"Added Custom5" = Table.AddColumn(#"Added Custom4", "ShortMonthName", each Text.Start([MonthName],3)),
+    #"Added Custom6" = Table.AddColumn(#"Added Custom5", "Quarter", each Date.QuarterOfYear([Dates])),
+    #"Changed Type3" = Table.TransformColumnTypes(#"Added Custom6",{{"Quarter", type text}}),
+    #"Added Custom7" = Table.AddColumn(#"Changed Type3", "QtrText", each "Qtr "& [Quarter]),
+    #"Changed Type4" = Table.TransformColumnTypes(#"Added Custom7",{{"Year", Int64.Type}, {"Month", Int64.Type}, {"Quarter", Int64.Type}}),
+    #"Duplicated Column" = Table.DuplicateColumn(#"Changed Type4", "Dates", "Dates - Copy"),
+    #"Inserted Merged Column" = Table.AddColumn(#"Duplicated Column", "Month-Year", each Text.Combine({Text.From([Month], "en-AU"), Text.From([Year], "en-AU")}, "-"), type text),
+    #"Added Custom" = Table.AddColumn(#"Inserted Merged Column", "MonthYearSort", each Number.ToText([Year])&Text.PadStart(Number.ToText([Month]),2,"0")),
+    #"Duplicated Column1" = Table.DuplicateColumn(#"Added Custom", "Dates", "Dates - Copy.1"),
+    #"Renamed Columns" = Table.RenameColumns(#"Duplicated Column1",{{"Dates - Copy.1", "Week no"}}),
+    #"Calculated Week of Year" = Table.TransformColumns(#"Renamed Columns",{{"Week no", Date.WeekOfYear, Int64.Type}}),
+    #"Inserted Merged Column1" = Table.AddColumn(#"Calculated Week of Year", "Year-week", each Text.Combine({Text.From([Year], "en-AU"), Text.From([Week no], "en-AU")}, "-"), type text)
+in
+    #"Inserted Merged Column1"
